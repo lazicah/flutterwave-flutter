@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -62,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(hintText: "Amount"),
                   validator: (value) =>
-                      value.isNotEmpty ? null : "Amount is required",
+                      value!.isNotEmpty ? null : "Amount is required",
                 ),
               ),
               Container(
@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     hintText: "Currency",
                   ),
                   validator: (value) =>
-                      value.isNotEmpty ? null : "Currency is required",
+                      value!.isNotEmpty ? null : "Currency is required",
                 ),
               ),
               Container(
@@ -114,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     hintText: "Email",
                   ),
                   validator: (value) =>
-                      value.isNotEmpty ? null : "Email is required",
+                      value!.isNotEmpty ? null : "Email is required",
                 ),
               ),
               Container(
@@ -127,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     hintText: "Phone Number",
                   ),
                   validator: (value) =>
-                      value.isNotEmpty ? null : "Phone Number is required",
+                      value!.isNotEmpty ? null : "Phone Number is required",
                 ),
               ),
               Container(
@@ -152,9 +152,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 width: double.infinity,
                 height: 50,
                 margin: EdgeInsets.fromLTRB(0, 20, 0, 10),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: this._onPressed,
-                  color: Colors.blue,
                   child: Text(
                     "Make Payment",
                     style: TextStyle(color: Colors.white),
@@ -169,31 +168,34 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _onPressed() {
-    if (this.formKey.currentState.validate()) {
+    if (this.formKey.currentState!.validate()) {
       this._handlePaymentInitialization();
     }
   }
 
+  String encryptionKey = "FLWPUBK_TEST-SANDBOXDEMOKEY-X";
+  String publicKey = "FLWPUBK_TEST-SANDBOXDEMOKEY-X";
+
   _handlePaymentInitialization() async {
     final flutterwave = Flutterwave.forUIPayment(
-      amount: this.amountController.text.toString().trim(),
-      currency: this.currencyController.text,
-      context: this.context,
-      publicKey: this.publicKeyController.text.trim(),
-      encryptionKey: this.encryptionKeyController.text.trim(),
-      email: this.emailController.text.trim(),
-      fullName: "Test User",
-      txRef: DateTime.now().toIso8601String(),
-      narration: "Example Project",
-      isDebugMode: this.isDebug,
-      phoneNumber: this.phoneNumberController.text.trim(),
-      acceptAccountPayment: true,
-      acceptCardPayment: true,
-      acceptUSSDPayment: true
-    );
+        amount: this.amountController.text.toString().trim(),
+        currency: this.currencyController.text,
+        context: this.context,
+        publicKey: publicKey,
+        encryptionKey: encryptionKey,
+        email: this.emailController.text.trim(),
+        fullName: "Test User",
+        txRef: DateTime.now().toIso8601String(),
+        narration: "Example Project",
+        isDebugMode: this.isDebug,
+        phoneNumber: this.phoneNumberController.text.trim(),
+        acceptAccountPayment: true,
+        acceptCardPayment: true,
+        acceptBankTransfer: true,
+        acceptUSSDPayment: true);
     final response = await flutterwave.initializeForUiPayments();
     if (response != null) {
-      this.showLoading(response.data.status);
+      this.showLoading(response.data!.status!);
     } else {
       this.showLoading("No Response!");
     }
@@ -225,7 +227,10 @@ class _MyHomePageState extends State<MyHomePage> {
       child: ListView(
         children: currencies
             .map((currency) => ListTile(
-                  onTap: () => {this._handleCurrencyTap(currency)},
+                  onTap: () {
+                    print(currency);
+                    return this._handleCurrencyTap(currency);
+                  },
                   title: Column(
                     children: [
                       Text(

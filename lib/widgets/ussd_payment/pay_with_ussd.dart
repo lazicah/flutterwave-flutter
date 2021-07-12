@@ -43,17 +43,15 @@ class _PayWithUssdState extends State<PayWithUssd> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.orange),
       debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
         key: this._scaffoldKey,
         appBar: FlutterwaveViewUtils.appBar(context, "USSD"),
-        body: Padding(
-          padding: EdgeInsets.all(10),
-          child: Container(
-            margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-            width: double.infinity,
-            child: this._getHomeView(),
-          ),
+        body: Container(
+          margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+          width: double.infinity,
+          child: this._getHomeView(),
         ),
       ),
     );
@@ -69,28 +67,40 @@ class _PayWithUssdState extends State<PayWithUssd> {
   Widget _getBanksThatAllowsUssd() {
     final banks = BanksWithUssd.getBanks();
     return Container(
-      height: 250,
-      margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-      color: Colors.white,
-      child: ListView(
-        children: banks
-            .map((bank) => ListTile(
-                  onTap: () => {this._handleBankTap(bank)},
-                  title: Column(
-                    children: [
-                      Text(
-                        bank.bankName,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      SizedBox(height: 4),
-                      Divider(height: 1)
-                    ],
+        height: 300,
+        child: Builder(builder: (context) {
+          return Material(
+            type: MaterialType.transparency,
+            child: Column(
+              children: [
+                ListTile(
+                  tileColor: Color(0xFFfff1d0),
+                  title: Text(
+                    'Select bank',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
-                ))
-            .toList(),
-      ),
-    );
+                ),
+                Expanded(
+                  child: Scrollbar(
+                    isAlwaysShown: true,
+                    child: ListView(
+                      children: ListTile.divideTiles(
+                          context: context,
+                          tiles: banks.map((bank) => ListTile(
+                                onTap: () => {this._handleBankTap(bank)},
+                                title: Text(
+                                  bank.bankName,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ))).toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }));
   }
 
   void _handleBankTap(final BanksWithUssd selectedBank) {
@@ -120,8 +130,8 @@ class _PayWithUssdState extends State<PayWithUssd> {
   void _initiateUSSDPayment() async {
     if (this.selectedBank != null) {
       final USSDPaymentManager pm = this.widget._paymentManager;
-     FlutterwaveViewUtils.showConfirmPaymentModal(this.context,
-         pm.currency, pm.amount, this._payWithUSSD);
+      FlutterwaveViewUtils.showConfirmPaymentModal(
+          this.context, pm.currency, pm.amount, this._payWithUSSD);
     } else {
       this._showSnackBar("Please select a bank");
     }
@@ -142,10 +152,8 @@ class _PayWithUssdState extends State<PayWithUssd> {
         phoneNumber: ussdPaymentManager.phoneNumber);
 
     try {
-      final ChargeResponse response = await this
-          .widget
-          ._paymentManager
-          .payWithUSSD(request, http.Client());
+      final ChargeResponse response =
+          await this.widget._paymentManager.payWithUSSD(request, http.Client());
       if (FlutterwaveConstants.SUCCESS == response.status) {
         this._afterChargeInitiated(response);
       } else {
@@ -162,14 +170,15 @@ class _PayWithUssdState extends State<PayWithUssd> {
     final timeoutInMinutes = 2;
     final timeOutInSeconds = timeoutInMinutes * 60;
     final requestIntervalInSeconds = 7;
-    final numberOfTries = timeOutInSeconds/requestIntervalInSeconds;
+    final numberOfTries = timeOutInSeconds / requestIntervalInSeconds;
     int intialCount = 0;
 
     if (this._chargeResponse != null) {
       this._showLoading(FlutterwaveConstants.VERIFYING);
       final client = http.Client();
       ChargeResponse? response;
-      Timer.periodic(Duration(seconds: requestIntervalInSeconds), (timer) async {
+      Timer.periodic(Duration(seconds: requestIntervalInSeconds),
+          (timer) async {
         try {
           if ((intialCount >= numberOfTries) && response != null) {
             timer.cancel();
@@ -241,12 +250,14 @@ class _PayWithUssdState extends State<PayWithUssd> {
                 backgroundColor: Colors.orangeAccent,
               ),
               SizedBox(
-                width: 40,
+                width: 16,
               ),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black),
+              Expanded(
+                child: Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
               )
             ],
           ),
@@ -262,4 +273,3 @@ class _PayWithUssdState extends State<PayWithUssd> {
     }
   }
 }
-

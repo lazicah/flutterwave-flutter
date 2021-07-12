@@ -34,23 +34,20 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.orange),
       debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
           key: this._scaffoldKey,
           appBar: FlutterwaveViewUtils.appBar(context, "Bank Transfer"),
-          body: Padding(
-              padding: EdgeInsets.all(10),
-              child: Container(
-                  margin: EdgeInsets.fromLTRB(20, 10, 20, 20),
-                  width: double.infinity,
-                  child: this._getHomeView()))),
+          body:
+              Padding(padding: EdgeInsets.all(20), child: this._getHomeView())),
     );
   }
 
   Widget _getHomeView() {
     return this.hasInitiatedPay
         ? AccountDetails(this._bankTransferResponse!, this._verifyTransfer)
-        : PayWithTransferButton(this._onPayClicked);
+        : Center(child: PayWithTransferButton(this._onPayClicked));
   }
 
   void _onPayClicked() {
@@ -115,21 +112,24 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
         }
         try {
           response = await FlutterwaveAPIUtils.verifyPayment(
-              this._bankTransferResponse!.meta!.authorization!.transferReference,
+              this
+                  ._bankTransferResponse!
+                  .meta!
+                  .authorization!
+                  .transferReference,
               client,
               this.widget._paymentManager.publicKey,
               this.widget._paymentManager.isDebugMode);
-
 
           if (response!.data!.status == FlutterwaveConstants.SUCCESSFUL &&
               response!.data!.amount == pm.amount &&
               response!.data!.currency == pm.currency &&
               response!.data!.flwRef ==
                   this
-                      ._bankTransferResponse
-                      !.meta
-                      !.authorization
-                      !.transferReference
+                      ._bankTransferResponse!
+                      .meta!
+                      .authorization!
+                      .transferReference
                       .toString()) {
             this._closeDialog();
             this._showSnackBar("Payment received");
@@ -183,15 +183,19 @@ class _PayWithBankTransferState extends State<PayWithBankTransfer> {
         this.loadingDialogContext = context;
         return AlertDialog(
           content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               CircularProgressIndicator(
                 backgroundColor: Colors.orangeAccent,
               ),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black),
+              SizedBox(
+                width: 16,
+              ),
+              Expanded(
+                child: Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
               )
             ],
           ),

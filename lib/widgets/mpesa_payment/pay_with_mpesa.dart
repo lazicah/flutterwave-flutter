@@ -33,6 +33,7 @@ class _PayWithMpesaState extends State<PayWithMpesa> {
         initialPhoneNumber != null ? initialPhoneNumber : "";
 
     return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.orange),
       debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
         key: this._scaffoldKey,

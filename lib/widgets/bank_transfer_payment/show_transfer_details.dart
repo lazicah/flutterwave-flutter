@@ -14,7 +14,6 @@ class AccountDetails extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      margin: EdgeInsets.fromLTRB(20, 40, 20, 20),
       child: Column(
         children: [
           Text(
@@ -28,86 +27,42 @@ class AccountDetails extends StatelessWidget {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                width: double.infinity,
-                margin: EdgeInsets.fromLTRB(20, 10, 20, 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Amount",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                    Text(authorization.transferAmount.toString(),
-                      textAlign: TextAlign.end,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                  ],
+              ListTile(
+                title: Text('Amount'),
+                trailing: Text(
+                  authorization.transferAmount.toString(),
                 ),
               ),
-              Container(
-                width: double.infinity,
-                margin: EdgeInsets.fromLTRB(20, 10, 20, 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Account Number",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                    Text(authorization.transferAccount,
-                      textAlign: TextAlign.end,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                  ],
+              ListTile(
+                title: Text(
+                  "Account Number",
+                ),
+                trailing: Text(
+                  authorization.transferAccount,
                 ),
               ),
-              Container(
-                width: double.infinity,
-                margin: EdgeInsets.fromLTRB(20, 10, 20, 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Bank Name",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                    Text(authorization.transferBank,
-                      textAlign: TextAlign.end,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                  ],
+              ListTile(
+                title: Text(
+                  "Bank Name",
+                ),
+                trailing: Text(
+                  authorization.transferBank,
                 ),
               ),
-              Container(
-                width: double.infinity,
-                margin: EdgeInsets.fromLTRB(20, 10, 20, 20),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Beneficiary Name",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                    Text(this._extractNameFromNote(authorization.transferNote),
-                      textAlign: TextAlign.end,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                    ),
-                  ],
+              ListTile(
+                title: Text(
+                  "Beneficiary Name",
+                ),
+                trailing: Text(
+                  this._extractNameFromNote(authorization.transferNote),
                 ),
               ),
               Container(
                 height: 40,
                 width: double.infinity,
                 margin: EdgeInsets.fromLTRB(5, 10, 20, 5),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: _handleTransferMade,
-                  color: Colors.orange,
                   child: Text(
                     "I have made the transfer",
                     style: TextStyle(color: Colors.white, fontSize: 18),

@@ -27,6 +27,9 @@ class FlutterwaveAPIUtils {
       if (response.statusCode == 200) {
         final List<dynamic> banks = jsonDecode(response.body)["data"];
         final result = banks.map((e) => Bank.fromJson(e)).toList();
+        result.sort((a, b) {
+          return a.name!.compareTo(b.name!);
+        });
         return result;
       } else {
         throw (FlutterWaveError(

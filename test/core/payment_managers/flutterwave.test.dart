@@ -51,7 +51,7 @@ main() {
       .thenAnswer((_) => Future.value(mockResponse));
       final result = await flutterwave.initializeForUiPayments();
       print(result.runtimeType);
-      expect("success", result.status);
+      expect("success", result!.status);
       verify(await flutterwave.initializeForUiPayments()).called(1);
     });
   });

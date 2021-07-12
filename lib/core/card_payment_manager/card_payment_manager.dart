@@ -147,9 +147,8 @@ class CardPaymentManager {
               ?.onError("Unable to complete payment. Please try another card");
         }
         if (requiresOtp) {
-          return this
-              .cardPaymentListener
-              ?.onRequireOTP(responseBody, responseBody.data!.processorResponse!);
+          return this.cardPaymentListener?.onRequireOTP(
+              responseBody, responseBody.data!.processorResponse!);
         }
 
         if (responseBody.status == FlutterwaveConstants.SUCCESS &&
@@ -203,9 +202,7 @@ class CardPaymentManager {
     if (Authorization.OTP == authMode) {
       final _authMode = response.data?.processorResponse;
       if (_authMode != null) {
-        return this
-            .cardPaymentListener
-            ?.onRequireOTP(response, _authMode);
+        return this.cardPaymentListener?.onRequireOTP(response, _authMode);
       }
       return this
           .cardPaymentListener

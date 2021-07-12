@@ -8,6 +8,7 @@ import 'package:flutterwave/models/requests/charge_card/charge_card_request.dart
 import 'package:flutterwave/models/requests/charge_card/charge_request_address.dart';
 import 'package:flutterwave/models/responses/charge_response.dart';
 import 'package:flutterwave/utils/flutterwave_constants.dart';
+import 'package:flutterwave/utils/input_formatters.dart';
 import 'package:flutterwave/widgets/card_payment/authorization_webview.dart';
 import 'package:flutterwave/widgets/card_payment/request_address.dart';
 import 'package:flutterwave/widgets/flutterwave_view_utils.dart';
@@ -52,32 +53,29 @@ class _CardPaymentState extends State<CardPayment>
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.orange),
       debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
         key: this._scaffoldKey,
         appBar: FlutterwaveViewUtils.appBar(context, "Card"),
         body: Form(
           key: this._cardFormKey,
-          child: Container(
-            margin: EdgeInsets.fromLTRB(10, 30, 10, 10),
-            width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  margin: EdgeInsets.all(10),
-                  alignment: Alignment.topCenter,
-                  width: double.infinity,
-                  child: Text(
-                    "Enter your card details",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
+                Text(
+                  "Enter your card details",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 8,
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(40, 5, 40, 5),
-                  width: double.infinity,
                   child: TextFormField(
                     decoration: InputDecoration(
                       hintText: "Card Number",
@@ -85,6 +83,11 @@ class _CardPaymentState extends State<CardPayment>
                     ),
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.number,
+                    maxLength: 22,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      CardNumberInputFormatter()
+                    ],
                     autocorrect: false,
                     style: TextStyle(
                       color: Colors.black,
@@ -95,86 +98,93 @@ class _CardPaymentState extends State<CardPayment>
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 7,
-                      margin: EdgeInsets.fromLTRB(30, 5, 30, 5),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          hintText: "MM",
-                          labelText: "Month",
-                          counterText: "",
+                    Expanded(
+                      child: Container(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            hintText: "MM",
+                            labelText: "Month",
+                            counterText: "",
+                          ),
+                          maxLength: 2,
+                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
+                          autocorrect: false,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.0,
+                          ),
+                          controller: this._cardMonthFieldController,
+                          validator: this._validateCardField,
                         ),
-                        maxLength: 2,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.number,
-                        autocorrect: false,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                        ),
-                        controller: this._cardMonthFieldController,
-                        validator: this._validateCardField,
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 7,
-                      margin: EdgeInsets.fromLTRB(40, 5, 40, 5),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          hintText: "YY",
-                          labelText: "Year",
-                          counterText: "",
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Container(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            hintText: "YY",
+                            labelText: "Year",
+                            counterText: "",
+                          ),
+                          maxLength: 2,
+                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
+                          autocorrect: false,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.0,
+                          ),
+                          controller: this._cardYearFieldController,
+                          validator: this._validateCardField,
                         ),
-                        maxLength: 2,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.number,
-                        autocorrect: false,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                        ),
-                        controller: this._cardYearFieldController,
-                        validator: this._validateCardField,
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 7,
-                      margin: EdgeInsets.fromLTRB(40, 5, 40, 5),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          hintText: "Cvv",
-                          labelText: "Cvv",
-                          counterText: "",
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            hintText: "Cvv",
+                            labelText: "Cvv",
+                            counterText: "",
+                          ),
+                          maxLength: 3,
+                          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
+                          obscureText: true,
+                          autocorrect: false,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20.0,
+                          ),
+                          controller: this._cardCvvFieldController,
+                          validator: (value) => value != null && value.isEmpty
+                              ? "cvv is required"
+                              : null,
                         ),
-                        maxLength: 3,
-                        maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.number,
-                        obscureText: true,
-                        autocorrect: false,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                        ),
-                        controller: this._cardCvvFieldController,
-                        validator: (value) => value != null && value.isEmpty
-                            ? "cvv is required"
-                            : null,
                       ),
                     ),
                   ],
                 ),
+                SizedBox(
+                  height: 16,
+                ),
                 Container(
                   width: double.infinity,
                   height: 45,
-                  margin: EdgeInsets.fromLTRB(40, 20, 20, 40),
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: this._onCardFormClick,
-                    color: Colors.orangeAccent,
                     child: Text(
                       "PAY",
                       style: TextStyle(color: Colors.white),
@@ -204,7 +214,11 @@ class _CardPaymentState extends State<CardPayment>
     this._showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
 
     final ChargeCardRequest chargeCardRequest = ChargeCardRequest(
-        cardNumber: this._cardNumberFieldController.value.text.trim()
+        cardNumber: this
+            ._cardNumberFieldController
+            .value
+            .text
+            .trim()
             .replaceAll(new RegExp(r"\s+"), ""),
         cvv: this._cardCvvFieldController.value.text.trim(),
         expiryMonth: this._cardMonthFieldController.value.text.trim(),
@@ -355,6 +369,7 @@ class _CardPaymentState extends State<CardPayment>
         textAlign: TextAlign.center,
       ),
     );
+
     this._scaffoldKey.currentState?.showSnackBar(snackBar);
   }
 
@@ -366,15 +381,19 @@ class _CardPaymentState extends State<CardPayment>
         this.loadingDialogContext = context;
         return AlertDialog(
           content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               CircularProgressIndicator(
                 backgroundColor: Colors.orangeAccent,
               ),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black),
+              SizedBox(
+                width: 16,
+              ),
+              Expanded(
+                child: Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black),
+                ),
               )
             ],
           ),

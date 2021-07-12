@@ -19,7 +19,6 @@ class _PayWithUssdButtonState extends State<PayWithUssdButton> {
   Widget build(BuildContext context) {
     return Container(
         width: double.infinity,
-        margin: EdgeInsets.fromLTRB(20, 50, 20, 20),
         child: Form(
           key: this._formState,
           child: Column(
@@ -27,20 +26,22 @@ class _PayWithUssdButtonState extends State<PayWithUssdButton> {
               TextFormField(
                 controller: this.widget.bankController,
                 readOnly: true,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20.0,
+                ),
                 onTap: this._showBottomSheet,
                 validator: (value) => value != null && value.isEmpty
                     ? "Please select a bank"
                     : null,
-                textAlign: TextAlign.center,
                 decoration: InputDecoration(labelText: "Bank Name"),
               ),
               Container(
                 width: double.infinity,
                 height: 50,
-                margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
-                child: RaisedButton(
+                margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                child: ElevatedButton(
                   onPressed: this._handlePayPressed,
-                  color: Colors.orange,
                   child: Text(
                     "PAY WITH USSD",
                     style: TextStyle(color: Colors.white, fontSize: 15),

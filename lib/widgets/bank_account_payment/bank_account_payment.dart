@@ -59,82 +59,80 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
     this._bankController.text =
         this.selectedBank != null ? this.selectedBank!.name! : "";
     return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.orange),
       debugShowCheckedModeBanner: widget._paymentManager.isDebugMode,
       home: Scaffold(
         key: this._scaffoldKey,
         appBar: FlutterwaveViewUtils.appBar(context, "Bank Account"),
         body: Padding(
-          padding: EdgeInsets.all(10),
-          child: Container(
-            width: double.infinity,
-            margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Form(
-              key: this._formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: "Phone Number",
-                      labelText: "Phone Number",
-                    ),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                    ),
-                    controller: this._phoneNumberController,
-                    validator: (value) =>
-                    value != null && value.isEmpty ? "Phone Number is required" : null,
+          padding: EdgeInsets.all(20),
+          child: Form(
+            key: this._formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Phone Number",
+                    labelText: "Phone Number",
                   ),
-                  TextFormField(
-                    onTap: this._showBottomSheet,
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      hintText: "Bank",
-                      labelText: "Bank",
-                    ),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                    ),
-                    controller: this._bankController,
-                    validator: (value) =>
-                    value != null && value.isEmpty ? "Bank is required" : null,
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20.0,
                   ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: "Account Number",
-                      labelText: "Account Number",
-                    ),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20.0,
-                    ),
-                    controller: this._accountNumberController,
-                    validator: (value) =>
-                    value != null && value.isEmpty
-                        ? "Account Number is required" : null,
+                  controller: this._phoneNumberController,
+                  validator: (value) => value != null && value.isEmpty
+                      ? "Phone Number is required"
+                      : null,
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Account Number",
+                    labelText: "Account Number",
                   ),
-                  Container(
-                    width: double.infinity,
-                    height: 50,
-                    margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    child: RaisedButton(
-                      onPressed: this._onPaymentClicked,
-                      color: Colors.orangeAccent,
-                      child: Text(
-                        "PAY WITH ACCOUNT",
-                        style: TextStyle(color: Colors.white, fontSize: 15),
-                      ),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20.0,
+                  ),
+                  controller: this._accountNumberController,
+                  validator: (value) => value != null && value.isEmpty
+                      ? "Account Number is required"
+                      : null,
+                ),
+                TextFormField(
+                  onTap: this._showBottomSheet,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    hintText: "Bank",
+                    labelText: "Bank",
+                  ),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 20.0,
+                  ),
+                  controller: this._bankController,
+                  validator: (value) => value != null && value.isEmpty
+                      ? "Bank is required"
+                      : null,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 50,
+                  margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: ElevatedButton(
+                    onPressed: this._onPaymentClicked,
+                    child: Text(
+                      "PAY WITH ACCOUNT",
+                      style: TextStyle(color: Colors.white, fontSize: 15),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -158,28 +156,40 @@ class PayWithBankAccountState extends State<PayWithBankAccount> {
 
   Widget _bankLists(final List<Bank> banks) {
     return Container(
-      height: 250,
-      margin: EdgeInsets.fromLTRB(0, 10, 0, 0),
-      color: Colors.white,
-      child: ListView(
-        children: banks
-            .map((bank) => ListTile(
-                  onTap: () => {this._handleBankTap(bank)},
-                  title: Column(
-                    children: [
-                      Text(
-                        bank.name!,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      SizedBox(height: 4),
-                      Divider(height: 1)
-                    ],
+        height: 300,
+        child: Builder(builder: (context) {
+          return Material(
+            type: MaterialType.transparency,
+            child: Column(
+              children: [
+                ListTile(
+                  tileColor: Color(0xFFfff1d0),
+                  title: Text(
+                    'Select bank',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
-                ))
-            .toList(),
-      ),
-    );
+                ),
+                Expanded(
+                  child: Scrollbar(
+                    isAlwaysShown: true,
+                    child: ListView(
+                      children: ListTile.divideTiles(
+                          context: context,
+                          tiles: banks.map((bank) => ListTile(
+                                onTap: () => {this._handleBankTap(bank)},
+                                title: Text(
+                                  bank.name!,
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ))).toList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }));
   }
 
   void _onPaymentClicked() {
